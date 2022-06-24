@@ -1,36 +1,20 @@
-import {
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-  printSchema,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, printSchema } from 'graphql';
+import { demoMutationType } from '../src/demoMutation';
 
-test('xxx', () => {
-  let userType = new GraphQLObjectType({
-    name: 'User',
-    fields: {
-      id: { type: GraphQLString },
-      name: { type: GraphQLString },
-    },
-  });
-
-  // Define the Query type
-  let queryType = new GraphQLObjectType({
+test('should be able to exercise schema resolver without server and with mocked collaborator', () => {
+  const queryType = new GraphQLObjectType({
     name: 'Query',
+    fields: {},
+  });
+  const mutationType = new GraphQLObjectType({
+    name: 'Mutation',
     fields: {
-      user: {
-        type: userType,
-        args: {
-          id: { type: GraphQLString },
-        },
-        resolve: (_, { id }) => {
-          console.log('Mooo!');
-        },
-      },
+      createClaimsSchedulerMaster: demoMutationType(),
     },
   });
+  let schema = new GraphQLSchema({ query: queryType, mutation: mutationType });
 
-  let schema = new GraphQLSchema({ query: queryType });
   console.log(printSchema(schema));
+
   expect(true).toBe(true);
 });
