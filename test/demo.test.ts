@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema, printSchema } from 'graphql';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { demoMutationType } from '../src/demoMutation';
 
 test('should be able to exercise schema resolver without server and with mocked collaborator', () => {
@@ -12,9 +13,16 @@ test('should be able to exercise schema resolver without server and with mocked 
       createClaimsSchedulerMaster: demoMutationType(),
     },
   });
-  let schema = new GraphQLSchema({ query: queryType, mutation: mutationType });
+  let programmaticSchema = new GraphQLSchema({
+    query: queryType,
+    mutation: mutationType,
+  });
 
-  console.log(printSchema(schema));
+  const schemaString = printSchema(programmaticSchema);
+
+  console.log(schemaString);
+
+  const schema = makeExecutableSchema({schemaString, null}});
 
   expect(true).toBe(true);
 });
